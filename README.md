@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ⛅ WeatherWise AI — Smart Daily Life Advisor
 
 > An AI-powered weather web app that gives you personalized daily advice — what to wear, when to go out, how to commute, and more. Built with Node.js, OpenWeatherMap, and Groq AI (LLaMA 3).
@@ -148,3 +149,7 @@ Focused on AI + Embedded Systems + Full-Stack Development
 ---
 
 *Built as a full-stack AI-style project. Perfect for learning API integration, backend development, and smart logic systems.*
+=======
+# weatherwise-ai
+Smart AI weather advisor using Node.js, OpenWeatherMap, and Groq LLaMA 3.
+>>>>>>> 0a7db4e8a63245169da37465a2bf635aac5a6879
