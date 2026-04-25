@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WeatherWise AI — Smart Daily Advisor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-default">
+
+  <!-- ── Animated Background Orbs ───────────────────────────── -->
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">⛅</span>
+      <span class="logo-text">WeatherWise <span class="logo-accent">AI</span></span>
+    </div>
+    <p class="tagline">Your intelligent daily life advisor</p>
+<p class="dev-name">Built by <span>Engineer Lajpat Rai</span></p>
+  </header>
+
+  <!-- ── Search Section ─────────────────────────────────────── -->
+  <section class="search-section">
+    <div class="search-box">
+      <input
+        type="text"
+        id="cityInput"
+        class="search-input"
+        placeholder="Enter your city (e.g. New York, London, Karachi)"
+        autocomplete="off"
+        spellcheck="false"
+        maxlength="60"
+      />
+      <button id="searchBtn" class="search-btn">
+        <span class="btn-text">Get My Forecast</span>
+        <span class="btn-icon">→</span>
+      </button>
+    </div>
+    <p class="search-hint">Powered by OpenWeatherMap + Groq AI</p>
+  </section>
+
+  <!-- ── Error Message ──────────────────────────────────────── -->
+  <div id="errorMsg" class="error-msg hidden" role="alert"></div>
+
+  <!-- ── Loading ────────────────────────────────────────────── -->
+  <div id="loadingState" class="loading-state hidden">
+    <div class="loader-ring">
+      <div></div><div></div><div></div><div></div>
+    </div>
+    <p class="loading-text">Analyzing weather conditions<span class="dots">...</span></p>
+  </div>
+
+  <!-- ── Main Result Dashboard ──────────────────────────────── -->
+  <main id="dashboard" class="dashboard hidden">
+
+    <!-- Current Weather Hero -->
+    <section class="weather-hero">
+      <div class="hero-left">
+        <div class="city-name">
+          <span id="cityName"></span>
+          <span class="country-badge" id="countryBadge"></span>
+        </div>
+        <div class="weather-condition" id="weatherCondition"></div>
+        <div class="temp-display">
+          <img id="weatherIcon" src="" alt="Weather icon" class="weather-icon" />
+          <span class="temp-value" id="tempValue"></span>
+          <span class="temp-unit">°C</span>
+        </div>
+        <div class="temp-range">
+          <span id="feelsLike"></span>
+          <span class="divider">|</span>
+          <span id="tempRange"></span>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-icon">💧</span>
+            <span class="stat-value" id="statHumidity"></span>
+            <span class="stat-label">Humidity</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">💨</span>
+            <span class="stat-value" id="statWind"></span>
+            <span class="stat-label">Wind</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">👁️</span>
+            <span class="stat-value" id="statVisibility"></span>
+            <span class="stat-label">Visibility</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">⏱️</span>
+            <span class="stat-value" id="statPressure"></span>
+            <span class="stat-label">Pressure</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🌅</span>
+            <span class="stat-value" id="statSunrise"></span>
+            <span class="stat-label">Sunrise</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🌇</span>
+            <span class="stat-value" id="statSunset"></span>
+            <span class="stat-label">Sunset</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Briefing Card -->
+    <section class="ai-briefing">
+      <div class="ai-header">
+        <span class="ai-badge">🤖 AI Daily Briefing</span>
+        <span class="ai-model">Powered by LLaMA 3 via Groq</span>
+      </div>
+      <p id="aiSummary" class="ai-text"></p>
+    </section>
+
+    <!-- Advice Cards Grid -->
+    <section class="advice-section">
+      <h2 class="section-title">📋 Smart Daily Advice</h2>
+      <div class="advice-grid">
+
+        <div class="advice-card" data-category="outfit">
+          <div class="card-header">
+            <span class="card-icon">👔</span>
+            <span class="card-title">What to Wear</span>
+          </div>
+          <p class="card-text" id="adviceOutfit"></p>
+        </div>
+
+        <div class="advice-card" data-category="health">
+          <div class="card-header">
+            <span class="card-icon">🏥</span>
+            <span class="card-title">Health Advisory</span>
+          </div>
+          <p class="card-text" id="adviceHealth"></p>
+        </div>
+
+        <div class="advice-card" data-category="activity">
+          <div class="card-header">
+            <span class="card-icon">⚡</span>
+            <span class="card-title">Activity Guide</span>
+          </div>
+          <p class="card-text" id="adviceActivity"></p>
+        </div>
+
+        <div class="advice-card" data-category="commute">
+          <div class="card-header">
+            <span class="card-icon">🚗</span>
+            <span class="card-title">Commute Tips</span>
+          </div>
+          <p class="card-text" id="adviceCommute"></p>
+        </div>
+
+        <div class="advice-card" data-category="hydration">
+          <div class="card-header">
+            <span class="card-icon">💧</span>
+            <span class="card-title">Hydration Plan</span>
+          </div>
+          <p class="card-text" id="adviceHydration"></p>
+        </div>
+
+        <div class="advice-card" data-category="besttime">
+          <div class="card-header">
+            <span class="card-icon">🕐</span>
+            <span class="card-title">Best Time Outside</span>
+          </div>
+          <p class="card-text" id="adviceBestTime"></p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 24-Hour Temperature Chart -->
+    <section class="chart-section">
+      <h2 class="section-title">📊 24-Hour Temperature Forecast</h2>
+      <div class="chart-container">
+        <canvas id="tempChart"></canvas>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <p>Built with ❤️ using Node.js · OpenWeatherMap · Groq AI (LLaMA 3)</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
